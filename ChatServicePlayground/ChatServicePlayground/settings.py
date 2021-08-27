@@ -75,13 +75,30 @@ TEMPLATES = [
 WSGI_APPLICATION = 'ChatServicePlayground.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+# Database PostGre Sql
 
+
+DB_NAME = 'chatapp'
+DB_USER = 'django'
+DB_PASSWORD = 'password'
 DATABASES = {
+    'default' : {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWORD,
+        'HOST':'localhost',
+        'PORT': '5432', 
+    }
+}
+
+# Channel Layers that uses Memurai
+CHANNEL_LAYERS = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        }
     }
 }
 
@@ -122,8 +139,23 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'media'),
+    
+]
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 
+# Simulating Content Delivery Network(CDN) like AWS,etc... 
+STATIC_ROOT = os.path.join(BASE_DIR,'static_cdn')
+MEDIA_ROOT = os.path.join(BASE_DIR,'media_cdn')
+
+# Store Profile pictures temporary 
+TEMP = os.path.join(BASE_DIR, 'media_cdn/temp')
+
+# Constant for ChatApp website (Change address to domain name if you are in production)
+BASE_DIR = "http://127.0.0.1:8000" 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 

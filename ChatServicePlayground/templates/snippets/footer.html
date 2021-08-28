@@ -8,8 +8,10 @@
 
 <div class="d-flex flex-row align-items-center footer bg-white shadow-lg mt-4">
 	<p class="m-auto">ChatApp | 2021</p>
+	<p><a class="dropdown-item" href="{% url 'account:view' user_id=request.user.id %}">Account</a></p>
 	{% if request.user.is_authenticated %}
 	<p><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></p>
 	{% endif %}
+	
 </div>
 <!-- End Footer -->

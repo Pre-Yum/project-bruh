@@ -165,6 +165,8 @@ TEMP = os.path.join(BASE_DIR, 'media_cdn/temp')
 
 # Constant for ChatApp website (Change address to domain name if you are in production)
 BASE_DIR = "http://127.0.0.1:8000" 
+BASE_URL = "http://127.0.0.1:8000" 
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760 # 10 mb
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 

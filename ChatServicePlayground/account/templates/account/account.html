@@ -137,10 +137,10 @@
 					
 				{% if is_friend %}
 					<div class="dropdown pt-4 m-auto">
-						<button class="btn btn-secondary dropdown-toggle friends-btn" type="button" id="id_friends_toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<button class="btn btn-secondary dropdown-toggle friends-btn" type="button" id="id_friends_toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
 						Friends
 						</button>
-						<div class="dropdown-menu" aria-labelledby="id_friends_toggle">
+						<div class="dropdown-click" aria-labelledby="id_friends_toggle">
 							<a class="dropdown-item" href="#" onclick="removeFriend('{{id}}', onFriendRemoved)">Unfriend</a>
 						</div>
 					</div>
@@ -148,7 +148,7 @@
 				
 				<!-- Friend list link -->
 		  		<div class="d-flex flex-column pt-4">
-					<a href="#">
+					<a href="{% url 'friend:list' user_id=id %}">
 						<div class="d-flex flex-row align-items-center justify-content-center icon-container">
 							<span class="material-icons mr-2 friends-icon">contact_page</span><span class="friend-text">Friends ({{friends|length}})</span>
 						</div>
@@ -161,7 +161,7 @@
 			<div class="card m-2 px-4 pb-4">
 				<!-- Friend requests -->
 		  		<div class="d-flex flex-column pt-4">
-					<a href="#">
+					<a href="{% url 'friend:friend-requests' user_id=id %}">
 						<div class="d-flex flex-row align-items-center justify-content-center icon-container">
 							<span class="material-icons mr-2 person-add-icon">person_add</span><span class="friend-text">Friend Requests ({{friend_requests|length}})</span>
 						</div>
@@ -216,41 +216,42 @@
 	var sendFriendRequestBtn = document.getElementById("id_send_friend_request_btn")
 	if (sendFriendRequestBtn != null){
 		sendFriendRequestBtn.addEventListener("click", function(){
-			//sendFriendRequest("{{id}}", onFriendRequestSent)
+			sendFriendRequest("{{id}}", onFriendRequestSent)
 		})
 	}
 
 	var cancelFriendRequestBtn = document.getElementById("id_cancel_friend_request_btn")
 	if(cancelFriendRequestBtn != null){
 		cancelFriendRequestBtn.addEventListener("click", function(){
-			//cancelFriendRequest("{{id}}", onFriendRequestCancelled)
+			cancelFriendRequest("{{id}}", onFriendRequestCancelled)
 		})
 	}
 
 	var removeFriendBtn = document.getElementById("id_unfriend_btn")
 	if (removeFriendBtn != null){
 		removeFriendBtn.addEventListener("click", function(){
-			//removeFriend("{{id}}", onFriendRemoved)
+			removeFriend("{{id}}", onFriendRemoved)
 		})
 	}
 
 	function triggerAcceptFriendRequest(friend_request_id){
-		//acceptFriendRequest(friend_request_id, onFriendRequestAccepted)
+		acceptFriendRequest(friend_request_id, onFriendRequestAccepted)
 	}
 
 	function triggerDeclineFriendRequest(friend_request_id){
-		//declineFriendRequest(friend_request_id, onFriendRequestDeclined)
+		declineFriendRequest(friend_request_id, onFriendRequestDeclined)
 	}
 	
 </script>
 
-{#% include 'snippets/send_friend_request.html' %#}
-{#% include 'snippets/accept_friend_request.html' %#}
-{#% include 'snippets/decline_friend_request.html' %#}
-{#% include 'snippets/cancel_friend_request.html' %#}
-{#% include 'snippets/remove_friend.html' %#}
+{% include 'friend/snippets/send_friend_request.html' %}
+{% include 'friend/snippets/accept_friend_request.html' %}
+{% include 'friend/snippets/decline_friend_request.html' %}
+{% include 'friend/snippets/cancel_friend_request.html' %}
+{% include 'friend/snippets/remove_friend.html' %}
 {#% include 'chat/create_or_return_private_chat.html' %#}
 
 
 
 {% endblock content %}
+

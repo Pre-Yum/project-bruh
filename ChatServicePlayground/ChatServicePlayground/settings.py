@@ -44,8 +44,10 @@ INSTALLED_APPS = [
     'personal',
     'account',
     'friend',
+    'chat',
     
     # third party apps
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -83,6 +85,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'ChatServicePlayground.wsgi.application'
+ASGI_APPLICATION = 'ChatServicePlayground.asgi.application'
 
 
 # Database PostGre Sql

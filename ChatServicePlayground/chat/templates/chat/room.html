@@ -23,11 +23,15 @@
 
   <div class="message-input">
     <div class="wrap">
+    {% if user.is_authenticated %}  
     <input id="chat-message-input" type="text" placeholder="Write your message..." />
     <i></i>
     <button id="chat-message-submit" class="submit">click
       <i></i>
     </button>
+    {% else %}
+    <p>You must have an account to send messages</p>
+    {% endif %}
     </div>
   </div>
   

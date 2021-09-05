@@ -13,4 +13,4 @@ class Message(models.Model):
         return self.author.username
 
     def last_10_messages(self):
-        return Message.objects.order_by('-timestamp').all()[:10]
+        return Message.objects.order_by('-timestamp').all()[:10:-1]

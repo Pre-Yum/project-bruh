@@ -8,8 +8,8 @@
     <title>Chat Room</title>
     <script>try{Typekit.load({ async: true });}catch(e){}</script>
 </head>
-<body>
- {% block content %}
+<body>{% block content %}
+  <script>try{Typekit.load({ async: true });}catch(e){}</script>
   <div class="messages">
     <ul id="chat-log">
      <li class="sent">
@@ -78,14 +78,15 @@
             chatSocket.send(JSON.stringify({
                 'command': 'new_message',
                 'message': message,
-                'from': username
+                'from': username,
+                'room_id': roomName,
             }));
     
             messageInputDom.value = '';
         };
     
         function fetchMessages() {
-          chatSocket.send(JSON.stringify({'command': 'fetch_messages' }));
+          chatSocket.send(JSON.stringify({'command': 'fetch_messages', 'room_id': roomName, 'from': username }));
         }
     
         function createMessage(data) {

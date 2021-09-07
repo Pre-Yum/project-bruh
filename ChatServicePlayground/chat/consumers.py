@@ -9,13 +9,39 @@ User = get_user_model()
 class ChatConsumer(WebsocketConsumer):
 
     def fetch_messages(self, data):
+        print(data)
+       
+        
+        b = list(Message.objects.filter(room_name=data['room_id']).values_list('content', flat=True))
+        '''
+        try:
+            b[0]   
+            author = data['from']
+            author_user = User.objects.filter(username=author)[0]
+            Message.objects.create(
+                author=author_user, 
+                room_name=data['room_id']
+                )
+            print('Room createdq')
+        except Exception as e:
+            print(f'Error : {e}')
+            author = data['from']
+            author_user = User.objects.filter(username=author)[0]
+            Message.objects.create(
+                author=author_user, 
+                room_name=data['room_id']
+                )
+            print('Room createdd')
+        '''   
+            
         messages = Message.last_10_messages(self,data['room_id'])
         content = {
             'command': 'messages',
             'messages': self.messages_to_json(messages)
         }
         self.send_message(content)
-
+        
+        
     def new_message(self, data):
         author = data['from']
         author_user = User.objects.filter(username=author)[0]
@@ -38,7 +64,6 @@ class ChatConsumer(WebsocketConsumer):
 
     def message_to_json(self, message):
         return {
-            'id': message.id,
             'author': message.author.username,
             'content': message.content,
             'timestamp': str(message.timestamp)

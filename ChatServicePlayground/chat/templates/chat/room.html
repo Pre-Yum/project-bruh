@@ -1,116 +1,212 @@
 {% extends 'base.html' %}
 {% load static %}
-<!-- chat/templates/chat/room.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8"/>
-    <title>Chat Room</title>
-    <script>try{Typekit.load({ async: true });}catch(e){}</script>
-</head>
-<body>{% block content %}
-  <script>try{Typekit.load({ async: true });}catch(e){}</script>
-  <div class="messages">
-    <ul id="chat-log">
-     <li class="sent">
-    
-      </li>
-      <li class="replies">
-        
-      </li> 
-    </ul>
-  </div>
 
-  <div class="message-input">
-    <div class="wrap">
-    {% if user.is_authenticated %}  
-    <input id="chat-message-input" type="text" placeholder="Write your message..." />
-    <i></i>
-    <button id="chat-message-submit" class="submit">click
-      <i></i>
-    </button>
-    {% else %}
+{% block content %}
+    <style>
+  @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+      
+        .wrapper{
+         
+          width: 700px;
+          background: #fff;
+          border-radius: 16px;
+          box-shadow: 0 0 128px 0 rgba(0,0,0,0.1),
+                      0 32px 64px -48px rgba(0,0,0,0.5);
+        }
+      
+        
+        /* Chat Area */
+        
+        .chat-area header{
+          display: flex;
+          align-items: center;
+          padding: 18px 30px;
+        }
+        .chat-area header img{
+          height: 45px;
+          width: 45px;
+          margin: 0 15px;
+        }
+        .chat-area header .back-icon{
+          font-size: 18px;
+          color: #333;
+        }
+        .chat-area header span{
+          font-size: 17px;
+          font-weight: 500;
+        }
+        .chat-box{
+          height: 500px;
+          overflow-y: auto;
+          background: #f7f7f7;
+          padding: 10px 30px 20px 30px;
+          box-shadow: inset 0 32px 32px -32px rgb(0 0 0 / 5%),
+                      inset 0 -32px 32px -32px rgb(0 0 0 / 5%);
+        }
+        .chat-box .chat{
+          margin: 15px 0;
+        }
+        .chat-box .chat p{
+          word-wrap: break-word;
+          padding: 8px 16px;
+          box-shadow: 0 0 32px rgb(0 0 0 / 8%),
+                      0 16px 16px -16px rgb(0 0 0 / 10%);;
+        }
+        .chat-box .outgoing{
+          display: flex;
+        }
+        .outgoing .details{
+          margin-left: auto;
+          max-width: calc(100% - 130px);
+        }
+        .outgoing .details p{
+          background: #53bef0;
+          color: #fff;
+          border-radius: 18px 18px 0 18px;
+        
+        }
+        .chat-box .incoming{
+          display: flex;
+          align-items: flex-end;
+        }
+        .chat-box .incoming img{
+          height: 35px;
+          width: 35px;
+        }
+        .incoming .details{
+          margin-left: 10px;
+          margin-right: auto;
+          max-width: calc(100% - 130px);
+        }
+        .incoming .details p{
+          background: #fff;
+          color: #333;
+          border-radius: 18px 18px 18px 0;
+        }
+        .chat-area .typing-area{
+          padding: 18px 30px;
+          display: flex;
+          justify-content: space-between;
+        }
+        .typing-area input{
+          height: 45px;
+          width: calc(100% - 58px);
+          font-size: 17px;
+          border: 1px solid #ccc;
+          padding: 0 13px;
+          border-radius: 5px 0 0 5px;
+          outline: none;
+        }
+        .typing-area button{
+          width: 55px;
+          border:none;
+          outline: none;
+          background: #53bef0;
+          color: #fff;
+          font-size: 19px;
+          cursor: pointer;
+          border-radius: 0 5px 5px 0;
+        }</style>
+  
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+      <div class="wrapper">
+         
+        
+            <div class="chat-box">
+             
+            </div>
+            {% if user.is_authenticated %} 
+            <form action="." class="typing-area"></form>
+                <input id = 'chat-message-input' class="typing-area" type="text" placeholder="Type your message here...">
+                <button id ='chat-message-submit'><i class="fab fa-telegram-plane"></i></button>
+            </form>
+            {% else %}
     <p>You must have an account to send messages</p>
     {% endif %}
-    </div>
-  </div>
-  
-    <!--{{ room_name|json_script:"room-name" }}-->
+       
+        <!--{{ room_name|json_script:"room-name" }}-->
     
     <script src="{% static 'main.js' %}"></script>
-<script src="{% static 'reconnecting-websocket.js' %}"></script>
-    <script>
-        var roomName = {{ room_name_json }};
-        var username = {{ username }};
-    
-        var chatSocket = new ReconnectingWebSocket(
-            'ws://' + window.location.host +
-            '/ws/chat/' + roomName + '/');
-    
-        chatSocket.onopen = function(e) {
-          fetchMessages();
-        }
-    
-        chatSocket.onmessage = function(e) {
-            var data = JSON.parse(e.data);
-            if (data['command'] === 'messages') {
-              for (let i=0; i<data['messages'].length; i++) {
-                createMessage(data['messages'][i]);
-              }
-            } else if (data['command'] === 'new_message'){
-              createMessage(data['message']);
+    <script src="{% static 'reconnecting-websocket.js' %}"></script>
+        <script>
+            var roomName = {{ room_name_json }};
+            var username = {{ username }};
+        
+            var chatSocket = new ReconnectingWebSocket(
+                'ws://' + window.location.host +
+                '/ws/chat/' + roomName + '/');
+        
+            chatSocket.onopen = function(e) {
+              fetchMessages();
             }
-        };
-    
-        chatSocket.onclose = function(e) {
-            console.error('Chat socket closed unexpectedly');
-        };
-    
-        document.querySelector('#chat-message-input').onkeyup = function(e) {
-         
-            /*
-            if (e.keyCode === 13) {  // enter, return
-                document.querySelector('#chat-message-submit').click();
-            }*/
-        };
-    
-        document.querySelector('#chat-message-submit').onclick = function(e) {
-            var messageInputDom = document.getElementById('chat-message-input');
-            var message = messageInputDom.value;
-            chatSocket.send(JSON.stringify({
-                'command': 'new_message',
-                'message': message,
-                'from': username,
-                'room_id': roomName,
-            }));
-    
-            messageInputDom.value = '';
-        };
-    
-        function fetchMessages() {
-          chatSocket.send(JSON.stringify({'command': 'fetch_messages', 'room_id': roomName, 'from': username }));
-        }
-    
-        function createMessage(data) {
-          var author = data['author'];
-          var msgListTag = document.createElement('li');
-          //var imgTag = document.createElement('img');
-          var pTag = document.createElement('p');
-          pTag.textContent = data.content;
-         //imgTag.src = 'http://emilcarlsson.se/assets/mikeross.png';
+        
+            chatSocket.onmessage = function(e) {
+                var data = JSON.parse(e.data);
+                if (data['command'] === 'messages') {
+                  for (let i=0; i<data['messages'].length; i++) {
+                    createMessage(data['messages'][i]);
+                  }
+                } else if (data['command'] === 'new_message'){
+                  createMessage(data['message']);
+                }
+            };
+        
+            chatSocket.onclose = function(e) {
+                console.error('Chat socket closed unexpectedly');
+            };
+        
+            document.querySelector('#chat-message-input').onkeyup = function(e) {
+             
+                /*
+                if (e.keyCode === 13) {  // enter, return
+                    document.querySelector('#chat-message-submit').click();
+                }*/
+            };
+        
+            document.querySelector('#chat-message-submit').onclick = function(e) {
+                var messageInputDom = document.getElementById('chat-message-input');
+                var message = messageInputDom.value;
+                chatSocket.send(JSON.stringify({
+                    'command': 'new_message',
+                    'message': message,
+                    'from': username,
+                    'room_id': roomName,
+                }));
+        
+                messageInputDom.value = '';
+            };
+        
+            function fetchMessages() {
+              chatSocket.send(JSON.stringify({'command': 'fetch_messages', 'room_id': roomName, 'from': username }));
+            }
+        
+            function createMessage(data) {
+              var author = data['author'];
+              var msgListTag = document.createElement('div');
+              var msgdetails = document.createElement('div');
+              
+              //var imgTag = document.createElement('img');
+              var pTag = document.createElement('p');
+              pTag.textContent = data.content;
+             //imgTag.src = 'http://emilcarlsson.se/assets/mikeross.png';
           
-          if (author === username) {
-            msgListTag.className = 'sent';
-          } else {
-            msgListTag.className = 'replies';
-          }
-          //msgListTag.appendChild(imgTag);
-          msgListTag.appendChild(pTag);
-          document.querySelector('#chat-log').appendChild(msgListTag);
-        }
-    
-    </script>
-    {% endblock content %}
-</body>
-
+              if (author === username) {
+                msgListTag.className = 'chat outgoing';
+              } else {
+                msgListTag.className = 'chat incoming';
+              }
+              msgdetails.className = 'details';
+              //msgListTag.appendChild(imgTag);
+              msgListTag.appendChild(msgdetails);
+              msgdetails.appendChild(pTag);
+              document.querySelector('.chat-box').appendChild(msgListTag);
+            }
+        
+        </script>
+        {% endblock content %}
+  </body>
 </html>

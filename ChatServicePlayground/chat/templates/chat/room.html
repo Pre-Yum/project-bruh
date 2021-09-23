@@ -247,7 +247,7 @@ border-radius: 5px;
             document.querySelector('#chat-message-submit').onclick = function(e) {
                 var messageInputDom = document.getElementById('chat-message-input');
                 var message = messageInputDom.value;
-                if (message != ''){
+                if (message.trim()){
                 chatSocket.send(JSON.stringify({
                     'command': 'new_message',
                     'message': message,

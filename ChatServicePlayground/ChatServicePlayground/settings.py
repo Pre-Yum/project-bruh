@@ -29,7 +29,7 @@ DEBUG = True
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-ALLOWED_HOSTS = ['dcd3-49-14-109-28.ngrok.io', '127.0.0.1']
+ALLOWED_HOSTS = [ '127.0.0.1']
 
 AUTH_USER_MODEL = "account.Account"
 AUTHENTICATION_BACKENDS = ( 

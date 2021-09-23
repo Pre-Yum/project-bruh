@@ -197,10 +197,10 @@ border-radius: 5px;
              
             </div>
             {% if user.is_authenticated %} 
-            <form action="." class="typing-area"></form>
-                <input id = 'chat-message-input' class="typing-area" type="text" placeholder="Type your message here...">
+            
+                <input id = 'chat-message-input' class="typing-area" type="text" placeholder="Type your message here..." required>
                 <button id ='chat-message-submit'><i class="fab fa-telegram-plane"></i></button>
-            </form>
+            
             {% else %}
     <p>You must have an account to send messages</p>
     {% endif %}
@@ -247,13 +247,14 @@ border-radius: 5px;
             document.querySelector('#chat-message-submit').onclick = function(e) {
                 var messageInputDom = document.getElementById('chat-message-input');
                 var message = messageInputDom.value;
+                if (message != ''){
                 chatSocket.send(JSON.stringify({
                     'command': 'new_message',
                     'message': message,
                     'from': username,
                     'room_id': roomName,
                 }));
-        
+              }
                 messageInputDom.value = '';
             };
         

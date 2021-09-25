@@ -68,13 +68,7 @@
 		<div class="d-flex flex-row-reverse flex-grow-1">
 			<nav class="">
 				{% if request.user.is_authenticated %}
-				<div class="dropdown">
-					<button class="dropbtn">Dropdown</button>
-					<div class="dropdown-content">
-						<a class="dropdown-item" href="{% url 'account:view' user_id=request.user.id %}">Account</a>
-						<a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
-					</div>
-				  </div>
+		
 				<div class="dropdown dropleft p-2 mt-2">
 					<div class="d-flex flex-row">
 						<div class="btn-group dropleft">

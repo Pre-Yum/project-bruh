@@ -206,12 +206,14 @@ border-radius: 5px;
             {% else %}
     <p>You must have an account to send messages</p>
     {% endif %}
+    
        
         <!--{{ room_name|json_script:"room-name" }}-->
     
     <script src="{% static 'main.js' %}"></script>
     <script src="{% static 'reconnecting-websocket.js' %}"></script>
         <script>
+          
             var roomName = {{ room_name_json }};
             var username = {{ username }};
         

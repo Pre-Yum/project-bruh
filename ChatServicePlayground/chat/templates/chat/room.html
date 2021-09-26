@@ -266,6 +266,7 @@ border-radius: 5px;
         
             function fetchMessages() {
               chatSocket.send(JSON.stringify({'command': 'fetch_messages', 'room_id': roomName, 'from': username }));
+              
             }
         
             function createMessage(data) {
@@ -276,7 +277,7 @@ border-radius: 5px;
               //var imgTag = document.createElement('img');
               var pTag = document.createElement('p');
               pTag.textContent = data.content;
-             //imgTag.src = 'http://emilcarlsson.se/assets/mikeross.png';
+             //imgTag.src = '{{request.author.profile_image.url}}';
           
               if (author === username) {
                 msgListTag.className = 'chat outgoing';
@@ -288,11 +289,12 @@ border-radius: 5px;
               msgListTag.appendChild(msgdetails);
               msgdetails.appendChild(pTag);
               document.querySelector('.chat-box').appendChild(msgListTag);
+              var element = document.getElementById('box');
+              element.scrollTop = element.scrollHeight;
+              console.log(author)
             }
-          
-            var element = document.getElementByClassName('box');
-
-element.scrollTop = element.scrollHeight;
+              
+            
 
         </script>
         {% endblock content %}

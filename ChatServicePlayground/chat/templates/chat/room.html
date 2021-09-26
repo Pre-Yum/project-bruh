@@ -13,6 +13,7 @@
           border-radius: 16px;
           box-shadow: 0 0 128px 0 rgba(0,0,0,0.1),
                       0 32px 64px -48px rgba(0,0,0,0.5);
+         
         }
       
         
@@ -44,6 +45,7 @@
           box-shadow: inset 0 32px 32px -32px rgb(0 0 0 / 5%),
                       inset 0 -32px 32px -32px rgb(0 0 0 / 5%);
           width: 100%;
+          overflow: scroll;
         }
         .chat-box .chat{
           margin: 15px 0;
@@ -195,7 +197,7 @@ border-radius: 5px;
       <div class="wrapper">
          
         
-            <div class="chat-box">
+            <div id = 'box' class="chat-box">
              
             </div>
             {% if user.is_authenticated %} 
@@ -287,7 +289,11 @@ border-radius: 5px;
               msgdetails.appendChild(pTag);
               document.querySelector('.chat-box').appendChild(msgListTag);
             }
-        
+          
+            var element = document.getElementByClassName('box');
+
+element.scrollTop = element.scrollHeight;
+
         </script>
         {% endblock content %}
   </body>

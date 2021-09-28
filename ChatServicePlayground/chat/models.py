@@ -9,9 +9,19 @@ class Message(models.Model):
     content = models.TextField(null=False,blank=False)
     timestamp = models.DateTimeField(auto_now_add=True)
     room_name = models.CharField(max_length=255,blank=True,null=True)
-
+ 
+    
     def __str__(self):
         return self.author.username
-
-    def last_10_messages(self, id='lobby'):
-        return Message.objects.order_by('-timestamp').filter(room_name=id)[::-1]
+    
+    
+    
+    def last_10_messages(self, id='lobby',m=[0,20]):
+        print(m)
+        
+        len_msg = len(Message.objects.order_by('-timestamp').filter(room_name=id)[::-1])
+        
+        if (len_msg <= m[1]) :
+            m[1] = len_msg   
+        print('parsed array exceeds') 
+        return  Message.objects.order_by('-timestamp').filter(room_name=id)[m[0]:m[1]:-1]

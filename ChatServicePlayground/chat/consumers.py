@@ -12,7 +12,7 @@ class ChatConsumer(WebsocketConsumer):
         print(data)
        
         
-        b = list(Message.objects.filter(room_name=data['room_id']).values_list('content', flat=True))
+        #b = list(Message.objects.filter(room_name=data['room_id']).values_list('content', flat=True))
         '''
         try:
             b[0]   
@@ -34,12 +34,13 @@ class ChatConsumer(WebsocketConsumer):
             print('Room createdd')
         '''   
             
-        messages = Message.last_10_messages(self,data['room_id'])
-        content = {
+        messages = Message.last_10_messages(self,data['room_id'], data['get_msg'])
+        if messages:
+            content = {
             'command': 'messages',
-            'messages': self.messages_to_json(messages)
-        }
-        self.send_message(content)
+            'messages': self.messages_to_json(messages) 
+            }
+            self.send_message(content)
         
         
     def new_message(self, data):
@@ -71,7 +72,8 @@ class ChatConsumer(WebsocketConsumer):
 
     commands = {
         'fetch_messages': fetch_messages,
-        'new_message': new_message
+        'new_message': new_message,
+        
     }
 
     def connect(self):

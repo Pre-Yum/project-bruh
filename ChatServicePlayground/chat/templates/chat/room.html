@@ -18,6 +18,10 @@
       
         
         /* Chat Area */
+        .details{
+          top: 30;
+          position: relative;
+        }
         
         .chat-area header{
           display: flex;
@@ -197,7 +201,7 @@ border-radius: 5px;
       <div class="wrapper">
          
         
-            <div id = 'box' class="chat-box">
+            <div id = 'box' class="chat-box" onscroll="myFunction()">
              
             </div>
             {% if user.is_authenticated %} 
@@ -209,7 +213,7 @@ border-radius: 5px;
     <p>You must have an account to send messages</p>
     {% endif %}
     
-       
+       <p id='demo'></p>
         <!--{{ room_name|json_script:"room-name" }}-->
     
     <script src="{% static 'main.js' %}"></script>
@@ -218,14 +222,17 @@ border-radius: 5px;
           
             var roomName = {{ room_name_json }};
             var username = {{ username }};
-        
+            var get_msg = [20, 40];
+           
             var chatSocket = new ReconnectingWebSocket(
                 'ws://' + window.location.host +
                 '/ws/chat/' + roomName + '/');
         
             chatSocket.onopen = function(e) {
-              fetchMessages();
-            }
+              fetchMessages()
+            } 
+             
+            
         
             chatSocket.onmessage = function(e) {
                 var data = JSON.parse(e.data);
@@ -263,11 +270,12 @@ border-radius: 5px;
               }
                 messageInputDom.value = '';
             };
-        
-            function fetchMessages() {
-              chatSocket.send(JSON.stringify({'command': 'fetch_messages', 'room_id': roomName, 'from': username }));
-              
+            
+            function fetchMessages(get_msg=[0,20]) {
+              chatSocket.send(JSON.stringify({'command': 'fetch_messages', 'room_id': roomName, 'from': username, 'get_msg': get_msg }));
+             
             }
+           
         
             function createMessage(data) {
               var author = data['author'];
@@ -290,10 +298,25 @@ border-radius: 5px;
               msgdetails.appendChild(pTag);
               document.querySelector('.chat-box').appendChild(msgListTag);
               var element = document.getElementById('box');
-              element.scrollTop = element.scrollHeight;
+              //element.scrollTop = element.scrollHeight;
               console.log(author)
             }
-              
+            function myFunction() {
+                
+                var elmnt = document.getElementById("box");
+                var x = elmnt.scrollLeft;
+                var y = elmnt.scrollTop;
+                document.getElementById ("demo").innerHTML = "Vertically: " + parseInt(y) + "px";
+                
+                
+                if((parseInt(y)==0)) {
+                  fetchMessages(get_msg)
+                  get_msg[0] = get_msg[1];
+                  get_msg[1] = get_msg[0] + 20
+              }
+              }
+          
+           
             
 
         </script>

@@ -13,6 +13,8 @@
           border-radius: 16px;
           box-shadow: 0 0 128px 0 rgba(0,0,0,0.1),
                       0 32px 64px -48px rgba(0,0,0,0.5);
+
+          
          
         }
       
@@ -50,6 +52,8 @@
                       inset 0 -32px 32px -32px rgb(0 0 0 / 5%);
           width: 100%;
           overflow: scroll;
+
+
         }
         .chat-box .chat{
           margin: 15px 0;
@@ -202,7 +206,7 @@ border-radius: 5px;
          
         
             <div id = 'box' class="chat-box" onscroll="myFunction()">
-             
+            
             </div>
             {% if user.is_authenticated %} 
             
@@ -256,7 +260,7 @@ border-radius: 5px;
                     document.querySelector('#chat-message-submit').click();
                 }*/
             };
-        
+        var crt_msg = 0;
             document.querySelector('#chat-message-submit').onclick = function(e) {
                 var messageInputDom = document.getElementById('chat-message-input');
                 var message = messageInputDom.value;
@@ -269,6 +273,7 @@ border-radius: 5px;
                 }));
               }
                 messageInputDom.value = '';
+                crt_msg = 1
             };
             
             function fetchMessages(get_msg=[0,20]) {
@@ -276,12 +281,16 @@ border-radius: 5px;
              
             }
            
-        
+            var elmnt = document.getElementById("box").childNodes;
+           
+
+
             function createMessage(data) {
               var author = data['author'];
               var msgListTag = document.createElement('div');
               var msgdetails = document.createElement('div');
-              
+              var bef1 = document.getElementsByClassName('chat outgoing');
+              var bef2 = document.getElementsByClassName('chat incoming');
               //var imgTag = document.createElement('img');
               var pTag = document.createElement('p');
               pTag.textContent = data.content;
@@ -296,7 +305,14 @@ border-radius: 5px;
               //msgListTag.appendChild(imgTag);
               msgListTag.appendChild(msgdetails);
               msgdetails.appendChild(pTag);
-              document.querySelector('.chat-box').appendChild(msgListTag);
+              var chat_box = document.querySelector('.chat-box')
+              if (crt_msg == 1){
+              chat_box.appendChild(msgListTag);
+              crt_msg = 0
+              }
+              else{
+              chat_box.insertBefore(msgListTag, chat_box.firstChild);
+              }
               var element = document.getElementById('box');
               //element.scrollTop = element.scrollHeight;
               console.log(author)
@@ -304,7 +320,6 @@ border-radius: 5px;
             function myFunction() {
                 
                 var elmnt = document.getElementById("box");
-                var x = elmnt.scrollLeft;
                 var y = elmnt.scrollTop;
                 document.getElementById ("demo").innerHTML = "Vertically: " + parseInt(y) + "px";
                 

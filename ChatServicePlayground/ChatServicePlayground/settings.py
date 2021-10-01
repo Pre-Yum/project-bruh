@@ -29,7 +29,7 @@ DEBUG = True
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-ALLOWED_HOSTS = [ '127.0.0.1']
+ALLOWED_HOSTS = []
 
 AUTH_USER_MODEL = "account.Account"
 AUTHENTICATION_BACKENDS = ( 
@@ -88,8 +88,18 @@ WSGI_APPLICATION = 'ChatServicePlayground.wsgi.application'
 ASGI_APPLICATION = 'ChatServicePlayground.asgi.application'
 
 
-# Database PostGre Sql
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        
+    }
+}
 
+
+
+"""
+# Database PostGre Sql
 
 DB_NAME = 'chatapp'
 DB_USER = 'django'
@@ -104,7 +114,7 @@ DATABASES = {
         'PORT': '5432', 
     }
 }
-
+"""
 # Channel Layers that uses Memurai
 CHANNEL_LAYERS = {
     'default': {

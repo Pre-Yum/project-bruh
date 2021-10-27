@@ -205,7 +205,7 @@ def save_temp_profile_image_from_base64String(imageString, user):
 		return url
 	except Exception as e:
 		print("exception: " + str(e))
-		# workaround for an issue I found
+		# workaround for an issue 
 		if str(e) == INCORRECT_PADDING_EXCEPTION:
 			imageString += "=" * ((4 - len(imageString) % 4) % 4)
 			return save_temp_profile_image_from_base64String(imageString, user)
@@ -219,6 +219,7 @@ def crop_image(request, *args, **kwargs):
 		try:
 			imageString = request.POST.get("image")
 			url = save_temp_profile_image_from_base64String(imageString, user)
+			print(url)
 			img = cv2.imread(url)
 
 			cropX = int(float(str(request.POST.get("cropX"))))
@@ -235,14 +236,30 @@ def crop_image(request, *args, **kwargs):
 
 			# delete the old image
 			user.profile_image.delete()
+			user.profile_image_small.delete()
 
+			
+   
 			# Save the cropped image to user model
 			user.profile_image.save("profile_image.png", files.File(open(url, 'rb')))
+			
+			user.profile_image_small.save("profile_image_small.png", files.File(open(url, 'rb')))
 			user.save()
 
 			payload['result'] = "success"
 			payload['cropped_profile_image'] = user.profile_image.url
+			print(user.profile_image.url)
 
+			try:
+				from PIL import Image
+				foo = Image.open(url)
+				foo = foo.resize((60,60),Image.ANTIALIAS)
+				foo.save(url,optimize=True,quality=60)
+				user.profile_image_small.save("profile_image_small.png", files.File(open(url, 'rb')))
+				user.save()
+				print(user.profile_image_small.url)
+			except Exception as e:
+				print(e)
 			# delete temp file
 			os.remove(url)
 			

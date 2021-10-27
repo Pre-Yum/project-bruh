@@ -37,8 +37,15 @@ class MyAccountManager(BaseUserManager):
 def get_profile_image_filepath(self, filename):
 	return 'profile_images/' + str(self.pk) + '/profile_image.png'
 
+def get_profile_image_filepath_small(self, filename):
+	return 'profile_images_small/' + str(self.pk) + '/profile_image_small.png'
+
+
 def get_default_profile_image():
 	return "imgs/logo_1080_1080.png"
+
+def get_default_profile_image_small():
+	return "imgs/logo_250_250.png"
 
 
 class Account(AbstractBaseUser):
@@ -51,6 +58,7 @@ class Account(AbstractBaseUser):
 	is_staff				= models.BooleanField(default=False)
 	is_superuser			= models.BooleanField(default=False)
 	profile_image			= models.ImageField(max_length=255, upload_to=get_profile_image_filepath, null=True, blank=True, default=get_default_profile_image)
+	profile_image_small		= models.ImageField(max_length=255, upload_to=get_profile_image_filepath_small, null=True, blank=True, default=get_default_profile_image_small)
 	hide_email				= models.BooleanField(default=True)
 
 	USERNAME_FIELD = 'email'
@@ -63,6 +71,9 @@ class Account(AbstractBaseUser):
 
 	def get_profile_image_filename(self):
 		return str(self.profile_image)[str(self.profile_image).index('profile_images/' + str(self.pk) + "/"):]
+
+	def get_profile_image_filename_small(self):
+		return str(self.profile_image)[str(self.profile_image).index('profile_images_small/' + str(self.pk) + "/"):]
 
 	# For checking permissions. to keep it simple all admin have ALL permissons
 	def has_perm(self, perm, obj=None):

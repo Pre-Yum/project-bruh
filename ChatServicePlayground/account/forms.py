@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate
 
 from account.models import Account
-
+import cv2
 
 class RegistrationForm(UserCreationForm):
 	email = forms.EmailField(max_length=255, help_text='Required. Add a valid email address.')
@@ -73,6 +73,7 @@ class AccountUpdateForm(forms.ModelForm):
         account.username = self.cleaned_data['username']
         account.email = self.cleaned_data['email'].lower()
         account.profile_image = self.cleaned_data['profile_image']
+        print(self.cleaned_data['profile_image'])
         account.hide_email = self.cleaned_data['hide_email']
         if commit:
             account.save()

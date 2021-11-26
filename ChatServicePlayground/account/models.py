@@ -63,7 +63,6 @@ class Account(AbstractBaseUser):
 
 	USERNAME_FIELD = 'email'
 	REQUIRED_FIELDS = ['username']
-
 	objects = MyAccountManager()
 
 	def __str__(self):
@@ -73,7 +72,7 @@ class Account(AbstractBaseUser):
 		return str(self.profile_image)[str(self.profile_image).index('profile_images/' + str(self.pk) + "/"):]
 
 	def get_profile_image_filename_small(self):
-		return str(self.profile_image)[str(self.profile_image).index('profile_images_small/' + str(self.pk) + "/"):]
+		return str(self.profile_image_small)[str(self.profile_image_small).index('profile_images_small/' + str(self.pk) + "/"):]
 
 	# For checking permissions. to keep it simple all admin have ALL permissons
 	def has_perm(self, perm, obj=None):

@@ -260,7 +260,7 @@ border-radius: 5px;
                     document.querySelector('#chat-message-submit').click();
                 }*/
             };
-        var crt_msg = 0;
+        var crt_msg = 0, type_msg = 0;
             document.querySelector('#chat-message-submit').onclick = function(e) {
                 var messageInputDom = document.getElementById('chat-message-input');
                 var message = messageInputDom.value;
@@ -270,20 +270,21 @@ border-radius: 5px;
                     'message': message,
                     'from': username,
                     'room_id': roomName,
+                  
                 }));
               }
                 messageInputDom.value = '';
-                crt_msg = 1
+                type_msg = 1;
             };
             
             function fetchMessages(get_msg=[0,20]) {
-              chatSocket.send(JSON.stringify({'command': 'fetch_messages', 'room_id': roomName, 'from': username, 'get_msg': get_msg }));
-             
+              chatSocket.send(JSON.stringify({'command': 'fetch_messages', 'room_id': roomName, 'from': username, 'get_msg': get_msg,  }));
+              crt_msg = 1
             }
            
             var elmnt = document.getElementById("box").childNodes;
            
-
+            
 
             function createMessage(data) {
               var author = data['author'];
@@ -291,24 +292,28 @@ border-radius: 5px;
               var msgdetails = document.createElement('div');
               var bef1 = document.getElementsByClassName('chat outgoing');
               var bef2 = document.getElementsByClassName('chat incoming');
-              //var imgTag = document.createElement('img');
+              var imgTag = document.createElement('img');
               var pTag = document.createElement('p');
-              pTag.textContent = data.content;
-             //imgTag.src = '{{request.author.profile_image.url}}';
-          
+              pTag.textContent = ''+author+'<br>'+data.content;
+              console.log('Authors are %s', author)
+              
               if (author === username) {
                 msgListTag.className = 'chat outgoing';
               } else {
                 msgListTag.className = 'chat incoming';
+                imgTag.src ="{{ MEDIA_URL }}"+ data.thumb_link;
+                console.log(data.thumb_link)
+                msgListTag.appendChild(imgTag);
+                
               }
               msgdetails.className = 'details';
-              //msgListTag.appendChild(imgTag);
               msgListTag.appendChild(msgdetails);
               msgdetails.appendChild(pTag);
               var chat_box = document.querySelector('.chat-box')
-              if (crt_msg == 1){
+              if (crt_msg == 1 || type_msg == 1){
               chat_box.appendChild(msgListTag);
-              crt_msg = 0
+              crt_msg = 0;
+              type_msg = 0
               }
               else{
               chat_box.insertBefore(msgListTag, chat_box.firstChild);

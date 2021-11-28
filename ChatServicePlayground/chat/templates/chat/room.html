@@ -227,7 +227,7 @@ border-radius: 5px;
             var roomName = {{ room_name_json }};
             var username = {{ username }};
             var get_msg = [20, 40];
-           
+            var crt_msg = 0, type_msg = 0;
             var chatSocket = new ReconnectingWebSocket(
                 'ws://' + window.location.host +
                 '/ws/chat/' + roomName + '/');
@@ -246,6 +246,7 @@ border-radius: 5px;
                   }
                 } else if (data['command'] === 'new_message'){
                   createMessage(data['message']);
+                  crt_msg = 1;
                 }
             };
         
@@ -260,7 +261,7 @@ border-radius: 5px;
                     document.querySelector('#chat-message-submit').click();
                 }*/
             };
-        var crt_msg = 0, type_msg = 0;
+        
             document.querySelector('#chat-message-submit').onclick = function(e) {
                 var messageInputDom = document.getElementById('chat-message-input');
                 var message = messageInputDom.value;
@@ -279,7 +280,7 @@ border-radius: 5px;
             
             function fetchMessages(get_msg=[0,20]) {
               chatSocket.send(JSON.stringify({'command': 'fetch_messages', 'room_id': roomName, 'from': username, 'get_msg': get_msg,  }));
-              crt_msg = 1
+              
             }
            
             var elmnt = document.getElementById("box").childNodes;
@@ -290,23 +291,25 @@ border-radius: 5px;
               var author = data['author'];
               var msgListTag = document.createElement('div');
               var msgdetails = document.createElement('div');
-              var bef1 = document.getElementsByClassName('chat outgoing');
-              var bef2 = document.getElementsByClassName('chat incoming');
-              var imgTag = document.createElement('img');
+              //var bef1 = document.getElementsByClassName('chat outgoing');
+              //var bef2 = document.getElementsByClassName('chat incoming');
               var pTag = document.createElement('p');
-              pTag.textContent = ''+author+'<br>'+data.content;
+              pTag.textContent = data.content;
               console.log('Authors are %s', author)
-              
+              msgdetails.className = 'details';
               if (author === username) {
                 msgListTag.className = 'chat outgoing';
               } else {
-                msgListTag.className = 'chat incoming';
+                var imgTag = document.createElement('img');
+                imgTag.className = "rounded-circle img-fluid profile-image"
+                msgListTag.className = 'chat incoming font-weight-bold';
+                pTag.className = 'font-weight-normal';
                 imgTag.src ="{{ MEDIA_URL }}"+ data.thumb_link;
-                console.log(data.thumb_link)
                 msgListTag.appendChild(imgTag);
-                
+                msgdetails.textContent = author;
               }
-              msgdetails.className = 'details';
+              
+              
               msgListTag.appendChild(msgdetails);
               msgdetails.appendChild(pTag);
               var chat_box = document.querySelector('.chat-box')

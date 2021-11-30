@@ -227,13 +227,15 @@ border-radius: 5px;
             var roomName = {{ room_name_json }};
             var username = {{ username }};
             var get_msg = [20, 40];
-            var crt_msg = 0, type_msg = 0;
+            var new_msg = 0, type_msg = 0;
+
             var chatSocket = new ReconnectingWebSocket(
                 'ws://' + window.location.host +
                 '/ws/chat/' + roomName + '/');
         
             chatSocket.onopen = function(e) {
               fetchMessages()
+              load_msg = 0;
             } 
              
             
@@ -242,12 +244,15 @@ border-radius: 5px;
                 var data = JSON.parse(e.data);
                 if (data['command'] === 'messages') {
                   for (let i=0; i<data['messages'].length; i++) {
+                    new_msg = 0;
                     createMessage(data['messages'][i]);
                   }
                 } else if (data['command'] === 'new_message'){
+                  new_msg = 1;
                   createMessage(data['message']);
-                  crt_msg = 1;
+                  
                 }
+                
             };
         
             chatSocket.onclose = function(e) {
@@ -261,7 +266,7 @@ border-radius: 5px;
                     document.querySelector('#chat-message-submit').click();
                 }*/
             };
-        
+            
             document.querySelector('#chat-message-submit').onclick = function(e) {
                 var messageInputDom = document.getElementById('chat-message-input');
                 var message = messageInputDom.value;
@@ -273,9 +278,10 @@ border-radius: 5px;
                     'room_id': roomName,
                   
                 }));
+                
               }
                 messageInputDom.value = '';
-                type_msg = 1;
+              
             };
             
             function fetchMessages(get_msg=[0,20]) {
@@ -313,13 +319,22 @@ border-radius: 5px;
               msgListTag.appendChild(msgdetails);
               msgdetails.appendChild(pTag);
               var chat_box = document.querySelector('.chat-box')
-              if (crt_msg == 1 || type_msg == 1){
+
+              
+              var ddd = new Date(Date.now());
+              var theDate = new Date(data.timestamp);
+              dateString = theDate.toGMTString();
+              dateString_now = ddd.toGMTString();
+              console.log(dateString_now+'----'+dateString)
+              console.log()
+
+              if (new_msg == 1 ){
               chat_box.appendChild(msgListTag);
-              crt_msg = 0;
-              type_msg = 0
+
               }
               else{
               chat_box.insertBefore(msgListTag, chat_box.firstChild);
+              
               }
               var element = document.getElementById('box');
               //element.scrollTop = element.scrollHeight;
@@ -333,9 +348,11 @@ border-radius: 5px;
                 
                 
                 if((parseInt(y)==0)) {
+                  
                   fetchMessages(get_msg)
                   get_msg[0] = get_msg[1];
-                  get_msg[1] = get_msg[0] + 20
+                  get_msg[1] = get_msg[0] + 20;
+                  
               }
               }
           

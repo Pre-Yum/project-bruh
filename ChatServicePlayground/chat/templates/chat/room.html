@@ -196,23 +196,24 @@ border-radius: 5px;
 }
         
         </style>
-  
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-      <div class="wrapper">
+    <div class="wrapper">
          
         
             <div id = 'box' class="chat-box" onscroll="myFunction()">
             
             </div>
             {% if user.is_authenticated %} 
-            
+            <!--
                 <input id = 'chat-message-input' class="typing-area" type="text" placeholder="Type your message here..." required>
-                <button id ='chat-message-submit'><i class="fab fa-telegram-plane"></i></button>
-            
+                <button id ='chat-message-submit'><span id="id_chat_message_submit" class="material-icons">send
+                </span></button>
+              --><div class="d-flex chat-message-input-container">
+				<textarea class="flex-grow-1 chat-message-input" id="chat-message-input"></textarea>
+				<button class="btn btn-primary chat-message-submit-button" id ='chat-message-submit'>
+					<span id="id_chat_message_submit" class="material-icons">send
+					</span>
+				</button>
+			</div>
             {% else %}
     <p>You must have an account to send messages</p>
     {% endif %}
@@ -227,7 +228,7 @@ border-radius: 5px;
             var roomName = {{ room_name_json }};
             var username = {{ username }};
             var get_msg = [20, 40];
-            var new_msg = 0, type_msg = 0;
+            var new_msg = 0;
 
             var chatSocket = new ReconnectingWebSocket(
                 'ws://' + window.location.host +
@@ -238,8 +239,13 @@ border-radius: 5px;
               load_msg = 0;
             } 
              
+            function scrollToBottom (id) {
+              var div = document.getElementById(id);
+             
+              div.scrollTop = div.scrollHeight - div.clientHeight;
+              
+              } 
             
-        
             chatSocket.onmessage = function(e) {
                 var data = JSON.parse(e.data);
                 if (data['command'] === 'messages') {
@@ -247,9 +253,13 @@ border-radius: 5px;
                     new_msg = 0;
                     createMessage(data['messages'][i]);
                   }
-                } else if (data['command'] === 'new_message'){
+                } 
+                else if (data['command'] === 'new_message'){
                   new_msg = 1;
                   createMessage(data['message']);
+                  scrollToBottom ('box');  
+                    
+
                   
                 }
                 

@@ -42,10 +42,10 @@ def get_profile_image_filepath_small(self, filename):
 
 
 def get_default_profile_image():
-	return "imgs/logo_1080_1080.png"
+	return "imgs/dummy_image.png"
 
 def get_default_profile_image_small():
-	return "imgs/logo_250_250.png"
+	return "imgs/dummy_image.png"
 
 
 class Account(AbstractBaseUser):

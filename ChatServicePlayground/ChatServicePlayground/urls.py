@@ -17,7 +17,10 @@ from django.conf import settings
 from django.conf.urls import include
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
-from django.urls import path
+from django.urls import path, re_path
+from django.views.generic.base import RedirectView
+
+favicon_view = RedirectView.as_view(url='/static/imgs/logo.png', permanent=True)
 
 from personal.views import (
 	home_screen_view
@@ -31,6 +34,9 @@ from account.views import (
 )
 
 urlpatterns = [
+    
+    re_path(r'^favicon\.ico$', favicon_view),
+    
 	path('', home_screen_view, name='home'),
     path('account/', include('account.urls', namespace='account')),
 	path('admin/', admin.site.urls),

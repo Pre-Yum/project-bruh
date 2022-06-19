@@ -25,12 +25,12 @@ class Message(models.Model):
         print(m)
         
         room, created = Rooms.objects.get_or_create(name = id)
-        print(room)
+        
             
         len_msg = len(Message.objects.order_by('-timestamp').filter(room_name=room)[::])
         
         if (len_msg <= m[1]) :
             m[1] = len_msg  
-            print('parsed array exceeds')
+            
              
         return  Message.objects.order_by('-timestamp').filter(room_name=room)[m[0]:m[1]:]
